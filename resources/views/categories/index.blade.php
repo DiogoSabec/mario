@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuários</title>
+    <title>Categorias</title>
 </head>
 <body>
-    <h1>Lista de usuários</h1>
-    <a href="/users/create">Adicionar usuário</a>
+    <h1>Lista de categorias</h1>
+    <a href="/categories/create">Adicionar category</a>
 
     <ul>
-    @foreach ($users as $user)
+    @foreach ($categories as $category)
         <li> 
-            {{ $user->id }} - {{ $user->name }} 
-            <a href="/users/edit/{{ $user->id }}">editar</a>
-            <form action="/users/{{ $user->id }}" method="post">
+            {{ $category->id }} - {{ $category->name }} 
+            <a href="/categories/edit/{{ $category->id }}">editar</a>
+            <form action="/categories/{{ $category->id }}" method="post">
                 @csrf
                 @method("delete")
                 <button type="submit">Deletar</button>
@@ -23,6 +23,6 @@
         </li> 
     @endforeach
     </ul>
-    <a href="/..">voltar</a>    
+    <a href="/..">voltar</a>
 </body>
 </html>

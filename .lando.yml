@@ -1,0 +1,17 @@
+name: crud
+recipe: laravel
+config:
+  webroot: public
+services:
+  appserver:
+    type: php:8.2
+    xdebug: debug
+    config: .lando/php.ini
+    build_as_root:
+      - apt-get update -y
+
+  database:
+    type: mysql
+    creds:
+      user: root
+      database: laravel

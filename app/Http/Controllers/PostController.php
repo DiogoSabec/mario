@@ -1,71 +1,67 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Models\post;
+use App\Models\user;
+use App\Models\category;
 
 class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
-        return view('posts.index', compact('posts'));
+        $posts = post::all();
+        $users = user::all();
+        $categories = category::all();
+        return view('posts.index')->with(['posts' => $posts, 'users' => $users, 'categories' => $categories]);
     }
 
     public function create()
     {
-        return view('posts.create');
+             $users = User::all();
+             $categories = Category::all();
+            return view('posts.create',['users' => $users], ['categories' => $categories]);
     }
 
     public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-            'user_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:categories,id',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:tags,id',
+    {    
+
+        post::create([
+            'name'=> $request->input('name'),
+            'title' => $request->input('title'),
+            'user_id' => $request->input('user_id'),
+            'category_id' => $request->input('category_id'),
         ]);
 
-        $post = Post::create($validatedData);
-        $post->tags()->attach($validatedData['tags']);
-
-        return redirect()->route('posts.index');
+        return redirect()->action([PostController::class, 'index']);
     }
 
-    public function show(Post $post)
-    {
-        return view('posts.show', compact('post'));
+    public function edit(post $post)
+    {          
+        $users = User::all(); // adicione esta linha para buscar todos os usuários
+        $categories = Category::all();
+    
+        return view('posts.edit', compact('post', 'users', 'categories'));      
+
     }
 
-    public function edit(Post $post)
+    public function update(Request $request, post $post)
     {
-        return view('posts.edit', compact('post'));
+        $post->name =  $request->input('name');
+        $post->title =  $request->input('title');
+        $post->user_id =  $request->input('user_id');
+        $post->category_id =  $request->input('category_id');
+        $post->save();
+ 
+
+        return redirect()->action([PostController::class, 'index']);
     }
 
-    public function update(Request $request, Post $post)
+    public function destroy(post $post)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|max:255',
-            'content' => 'required',
-            'user_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:categories,id',
-            'tags' => 'nullable|array',
-            'tags.*' => 'exists:tags,id',
-        ]);
-
-        $post->update($validatedData);
-        $post->tags()->sync($validatedData['tags']);
-
-        return redirect()->route('posts.index');
-    }
-
-    public function destroy(Post $post)
-    {
+        
         $post->delete();
-
-        return redirect()->route('posts.index');
+        
+        return redirect()->action([PostController::class, 'index']);
     }
 }

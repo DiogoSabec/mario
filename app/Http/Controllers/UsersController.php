@@ -10,7 +10,6 @@ class UsersController extends Controller
     public function index()
     {
         $users = User::all();
-        
         return view('users.index', ['users' => $users]);
     }
 
@@ -32,7 +31,8 @@ class UsersController extends Controller
     }
 
     public function edit(User $user)
-    {                
+    {        
+                
         return view('users.edit', ['user' => $user]);
     }
 
@@ -42,18 +42,12 @@ class UsersController extends Controller
         $user->email = $request->input('email');
         $user->save();
 
-        // $user->update([
-        //     'name' => $request->input('name'),
-        //     'email' => $request->input('email'),
-        // ]);
-
         return redirect()->action([UsersController::class, 'index']);
     }
 
     public function destroy(User $user)
     {
         $user->delete();
-        
         return redirect()->action([UsersController::class, 'index']);
     }
 
